@@ -1,0 +1,40 @@
+In this question, you will use the bushfire model to determine the optimal cell or cells in a landscape in which to conduct a prescribed burn in order to best protect a town from a future bushfire of unknown timing and origin.
+
+For this question, we modify our original definition of a landscape to include a town cell, containing a town. The town cell has a non-zero fuel load; that is, the town can catch fire.
+
+Prescribed burns
+A prescribed burn is a controlled fire used as part of forest management in order to reduce the risk of future uncontrolled fires.
+
+In our simulation model, the rules of a prescribed burn are that it will only occur on a day with no wind, and will commence on a single prescribed burn cell with a non-zero fuel load. A prescribed burn will not be conducted on the cell containing the town.
+
+A prescribed burn spreads just like a normal bushfire; however, due to the controlled nature of the fire, any burning cell contributes only half as many points to the ignition factor of adjacent cells as it ordinarily would
+(taking slope into account). That is, if it would normally contribute 0.5, 1 or 2 points, it will now only contribute 0.25, 0.5, or 1 points. This reduction applies both to the original prescribed burn cell and to any cell that subsequently catches fire during the prescribed burn.
+As with a normal bushfire, a prescribed burn will continue until no cells remain on fire.
+
+Scoring prescribed burn cells
+We filter out invalid prescribed burn cells and score the remaining valid prescribed burn cells as follows:
+
+Any prescribed burn cell that results in the the town cell catching fire is deemed invalid.
+
+Following the completion of a prescribed burn, we will consider scenarios in which potential bushfires start in any (single) seed cell with a non-zero fuel load (after the prescribed burn), except for the town cell, on a day with any possible wind conditions. Thus, for a landscape of dimensions M
+ , we will consider up to (M2−2)×9 bushfire scenarios. 2 is subtracted because we don't seed a bushfire on the town cell or cells with zero fuel load, of which there is at least one, being the cell in which the prescribed burn was conducted. For each seed cell there are 9 possible wind directions to consider, including no wind.
+
+Valid prescribed burn cells are scored according to the proportion of scenarios in which the town cell caught fire.
+
+The optimal cell or cells for prescribed burning are those with the lowest score; that is, that have been more effective at protecting the town.
+
+In the first example below, there are 4 cells with a non-zero fuel load, one of which (c1,1) is the town cell. Therefore there are three cells in which a prescribed burn can be conducted. None of these will result in the town being burnt, therefore they are all valid. When we test the 18 possible bushfire scenearios,
+we find that for one valid prescribed burn cell (c0,1), all subsequent bushfires will result in the town catching fire. For the other two prescribed burn cells (c0,0and c1,0), only half of the subsequent bushfires will result in the town catching fire; thus, either of these would be the optimal location in which to
+carry out a prescribed burn in this landscape.
+
+Your task
+Write a function plan_burn(f_grid, h_grid, i_threshold, town_cell) that determines the optimal prescribed burn cell or cells. f_grid, h_grid and i_threshold are all as defined in Questions 2 and 3. town_cell is a tuple containing the coordinates of the town cell.
+
+Your function should return a sorted list containing the coordinates of the optimal prescribed burn cell or cells, as defined above. If there are no valid prescribed burn cells, this list will be empty.
+
+For example:
+
+>>> plan_burn([[2, 2], [1, 2]], [[1, 2], [1, 2]], 2, (1, 1))
+[(0, 0), (1, 0)]
+>>> plan_burn([[0, 0, 0, 0, 0], [0, 2, 2, 0, 0], [0, 0, 0, 1, 0], [0, 0, 0, 1, 0], [1, 0, 0, 0, 0]], [[2, 2, 2, 2, 2], [2, 1, 2, 2, 2], [2, 2, 2, 2, 2], [2, 2, 2, 1, 2], [2, 2, 2, 2, 2]], 2, (3, 3))
+[(1, 1), (1, 2), (2, 3)]
